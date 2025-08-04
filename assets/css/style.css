@@ -35,6 +35,7 @@ audio {
   margin-top: 20px;
   display: flex;
   gap: 10px;
+  justify-content: center;
 }
 
 button {
@@ -48,10 +49,10 @@ button {
 
 #content {
   margin-top: 20px;
-  position: absolute;
+  position: static;
   bottom: 5vh;
-  left: 50%;
-  transform: translateX(-50%);
+  left: auto;
+  transform: none(-50%);
   width: 80%;
   color: #fff;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
