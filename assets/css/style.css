@@ -50,8 +50,8 @@ button {
 }
 
 #content.gift-layout {
-  left: 5vw;
-  transform: none;
+  left: 50%;
+  transform: translateX(-50%);
   width: auto;
 }
 
