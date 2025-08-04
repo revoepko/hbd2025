@@ -8,8 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const content = document.getElementById("content");
 
   giftBtn.addEventListener("click", () => {
-    content.innerHTML =
-      "<h2>🎁 깜짝 선물! 🎁</h2><p>당신의 하루가 행복으로 가득하길!</p>";
+    fetch("assets/gift.html")
+      .then((res) => res.text())
+      .then((html) => {
+        content.innerHTML = html;
+      });
   });
 
   letterBtn.addEventListener("click", () => {
