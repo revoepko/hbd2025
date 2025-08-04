@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((res) => res.text())
       .then((html) => {
         content.innerHTML = html;
-        content.classList.remove("gift-layout");
+        content.classList.add("gift-layout");
       });
   });
 });

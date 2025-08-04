@@ -94,3 +94,15 @@ textarea {
   object-fit: cover;
   border-radius: 4px;
 }
+
+/* Single photo displayed with the letter */
+.photo-single {
+  margin-bottom: 20px;
+}
+
+.photo-single img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 4px;
+}
