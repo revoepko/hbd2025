@@ -61,3 +61,19 @@ textarea {
   left: 0;
   z-index: -1;
 }
+
+/* Grid of photos shown with the gift message */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  gap: 5px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.photo-grid img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+}
