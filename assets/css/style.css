@@ -9,9 +9,9 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  height: 100vh;
+  height: 80vh;
   position: relative;
-  padding-top: 40px;
+  padding-top: 20px;
 }
 
 #top-image {
