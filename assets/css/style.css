@@ -50,12 +50,9 @@ button {
 #content {
   margin-top: 20px;
   position: static;
-  transform: none;
-  left: auto;
-  right: auto;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
+  bottom: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
   width: 80%;
   color: #fff;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
