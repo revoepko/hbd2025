@@ -12,38 +12,15 @@
   </head>
   <body>
     <h1>🎉 생일 축하합니다! 🎂</h1>
+      <audio id="audio-player" controls autoplay loop>
+        <source src="assets/music/hbd_piano.mp3" type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
     <div id="buttons">
       <button id="gift-btn">선물</button>
       <button id="letter-btn">편지</button>
     </div>
     <div id="content"></div>
-    <iframe
-      width="0"
-      height="0"
-      scrolling="no"
-      frameborder="no"
-      allow="autoplay"
-      src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/597450945&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"
-    ></iframe>
-    <div
-      style="font-size: 10px; color: #cccccc; line-break: anywhere; word-break: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: Interstate, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Garuda, Verdana, Tahoma, sans-serif; font-weight: 100; display: none;"
-    >
-      <a
-        href="https://soundcloud.com/saengilcughahabnida"
-        title="생일 축하 합니다"
-        target="_blank"
-        style="color: #cccccc; text-decoration: none;"
-        >생일 축하 합니다</a
-      >
-      ·
-      <a
-        href="https://soundcloud.com/saengilcughahabnida/vqhnffvzam9x"
-        title="생일 축하 합니다 (마림바)"
-        target="_blank"
-        style="color: #cccccc; text-decoration: none;"
-        >생일 축하 합니다 (마림바)</a
-      >
-    </div>
     <canvas id="canvas"></canvas>
     <script type="module" src="assets/js/main.js"></script>
   </body>
