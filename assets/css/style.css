@@ -49,6 +49,22 @@ button {
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
 }
 
+#content.gift-layout {
+  left: 5vw;
+  transform: none;
+  width: auto;
+}
+
+.gift-text {
+  text-align: left;
+}
+
+.gift-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
 textarea {
   width: 100%;
   max-width: 400px;
