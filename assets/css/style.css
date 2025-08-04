@@ -53,6 +53,7 @@ button {
   left: 50%;
   transform: translateX(-50%);
   width: auto;
+  bottom: 2vh;
 }
 
 .gift-text {
