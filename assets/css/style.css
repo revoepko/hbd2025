@@ -47,6 +47,7 @@ button {
 }
 
 #content {
+  margin-top: 20px;
   position: absolute;
   bottom: 5vh;
   left: 50%;
