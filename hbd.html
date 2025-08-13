@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>쑤를 위한 생일 축하 편지</title>
+  <meta name="description" content="음악 · 편지 · 이미지가 있는 생일축하 카드" />
+  <style>
+    :root{
+      --bg1:#fdf3ff; --bg2:#e6f4ff; --ink:#2a2a2a; --accent:#ff5ea6;
+      --card:#ffffffaa; --ring:#ffd166; --shadow:0 10px 30px rgba(0,0,0,.1);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Apple SD Gothic Neo, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--ink);
+      background: radial-gradient(1200px 800px at 10% 10%, var(--bg1), transparent),
+                 radial-gradient(1200px 800px at 90% 20%, var(--bg2), transparent),
+                 linear-gradient(180deg, #fff, #f7fbff);
+      overflow-x:hidden;
+    }
+    .wrap{max-width:1100px; margin:0 auto; padding:24px; position:relative}
+
+    /* Header */
+    header{
+      display:flex; gap:24px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+      padding:20px 24px; background:var(--card); border-radius:24px; box-shadow:var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+    .title{
+      display:flex; align-items:center; gap:16px;
+    }
+    .emoji{
+      font-size:42px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.15));
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    h1{font-size: clamp(28px, 4vw, 44px); margin:0}
+    .meta{opacity:.7; font-size:14px}
+
+    .controls{display:flex; gap:12px; flex-wrap:wrap}
+    button{
+      appearance:none; border:none; cursor:pointer; border-radius:999px; padding:12px 18px;
+      background:var(--accent); color:#fff; font-weight:700; letter-spacing:.2px; box-shadow:var(--shadow);
+      transition: transform .08s ease, filter .2s ease;
+    }
+    button:hover{filter:brightness(1.05)}
+    button:active{transform:translateY(1px)}
+    .ghost{background:#fff; color:#333; border:1px solid #eee}
+
+    /* Letter */
+    .section{margin-top:24px}
+    .card{
+      background:#fff; border-radius:24px; box-shadow:var(--shadow); padding:26px; line-height:1.7;
+      position:relative; overflow:hidden;
+    }
+    .card h2{margin-top:0}
+    .tape{
+      position:absolute; top:-10px; left:28px; right:auto; transform:rotate(-3deg);
+      width:92px; height:28px; background:repeating-linear-gradient(45deg, #ffe3a3, #ffe3a3 8px, #ffd166 8px, #ffd166 16px);
+      opacity:.8; border-radius:6px;
+    }
+    .letter{font-size:17px}
+    .signature{margin-top:16px; font-weight:700}
+
+    /* Gallery */
+    .grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:12px}
+    .photo{position:relative; overflow:hidden; border-radius:18px; aspect-ratio: 4/5; background:#f4f6f8}
+    .photo img{width:100%; height:100%; object-fit:cover; display:block; transition: transform .4s ease}
+    .photo:hover img{transform:scale(1.04)}
+    .badge{
+      position:absolute; top:10px; left:10px; background:#ffffffcc; padding:6px 10px; border-radius:999px; font-size:12px;
+      box-shadow: var(--shadow);
+    }
+
+    /* Footer */
+    footer{margin:26px 0 40px; text-align:center; opacity:.6}
+
+    /* Floating hearts */
+    .hearts{position:fixed; inset:0; pointer-events:none; overflow:hidden}
+    .heart{position:absolute; bottom:-40px; font-size:20px; animation:rise linear forwards}
+    @keyframes rise{to{transform:translateY(-110vh); opacity:0}}
+
+    /* Confetti canvas */
+    canvas#confetti{position:fixed; inset:0; pointer-events:none}
+
+    .hint{font-size:13px; opacity:.7}
+  </style>
+</head>
+<body>
+  <canvas id="confetti"></canvas>
+  <div class="hearts" id="hearts"></div>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="emoji" aria-hidden>🎂</div>
+        <div>
+          <h1 id="headline">생일 축하해요, <span id="name">쑤</span>!</h1>
+          <div class="meta"><span id="date">2025-08-14</span></div>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="play">▶︎ 음악 재생 & 축하폭죽</button>
+        <button id="pause" class="ghost">⏸ 일시정지</button>
+        <button id="replay" class="ghost">↺ 다시 보기</button>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="card">
+        <div class="tape" aria-hidden></div>
+        <h2>Card</h2>
+        <div class="letter" id="letter"></div>
+        <div class="signature" id="from"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <h2>Photo</h2>
+        <div class="grid" id="gallery"></div>
+      </div>
+    </section>
+
+    <footer>
+      From <span id="creator">꾸사장</span> + 채찍이 ✨
+    </footer>
+  </div>
+  <!-- 음악 소스 -->
+  <audio id="bgm" preload="auto" crossorigin="anonymous"></audio>
+  <script>
+    const CONFIG = {
+      name: "쑤",
+      date: "2025-08-14",
+      creator: "꾸사장",
+      song: {
+        src: "https://cdn.pixabay.com/download/audio/2021/10/16/audio_0a3d38d9c8.mp3?filename=happy-birthday-120-bpm-9797.mp3", // 원하면 로컬 경로로 교체하세요
+        title: "Happy Birthday",
+      },
+      letter: `
+      쑤의 생일을 축하해요!\n
+      꾸사장의 정신없이 바쁜 NEW! 직장생활 + 말 푸지게 안 듣는 최고급 컴퓨터에 여러모로 8월 중순까지 정신이 없었군요..!\n
+      쑤의 오늘 하루가 신나고 재밌고 반짝이길 바라고\n      앞으로의 하루하루도 쑤에게 빛날 쑤 있길!\n
+      늘 좋은말, 멋진말만 해주는 쑤에게 고맙고 앞으로도 잘 부탁해요! 출근길에 비가 엄청나게 쏟아졌는데 퇴근즈음엔 좀 그쳐서 같이 맛난 초밥 먹으면 좋겠군요 :3!\n
+      생일 축하하고 좋은 하루 보내요! 사랑해용!💖
+      `,
+      from: "보내는 이: 꾸사장",
+      images: [
+        {src: "https://pbs.twimg.com/media/Ggtkk92akAAbOj2?format=jpg&name=large", tag: "농담곰커플"},
+        {src: "https://pbs.twimg.com/media/Gjlzce9aIAAL87F?format=jpg&name=small", tag: "농담곰커플"},
+        {src: "https://pbs.twimg.com/media/GiiIwVobAAACeJa?format=jpg&name=small", tag: "금담곰"},
+        {src: "https://pbs.twimg.com/media/Gho4llobwAAoPwE?format=jpg&name=small", tag: "큐피드담곰"},
+        {src: "https://pbs.twimg.com/media/GxNDWF_bkAAH21H?format=jpg&name=medium", tag: "오늘은내생일이곰"},
+        {src: "https://pbs.twimg.com/media/GxNDWIPaIAU152V?format=jpg&name=large", tag: "쑤박곰의생일"},
+      ]
+    };
+    // 초기 렌더
+    const el = (id)=>document.getElementById(id);
+    el('name').textContent = CONFIG.name;
+    el('date').textContent = CONFIG.date;
+    el('creator').textContent = CONFIG.creator;
+    el('headline').setAttribute('aria-label', `생일 축하해, ${CONFIG.name}!`);
+    el('letter').innerText = CONFIG.letter.trim();
+    el('from').innerText = CONFIG.from;
+
+    // 갤러리 렌더
+    const gallery = el('gallery');
+    (CONFIG.images||[]).slice(0,6).forEach((p,i)=>{
+      const d = document.createElement('div'); d.className='photo';
+      const img = document.createElement('img'); img.loading='lazy'; img.alt=`photo ${i+1}`; img.src=p.src;
+      const b = document.createElement('div'); b.className='badge'; b.textContent=p.tag||'Photo';
+      d.append(img,b); gallery.append(d);
+    });
+
+    // 오디오 세팅
+    const audio = el('bgm');
+    audio.src = CONFIG.song.src;
+    audio.setAttribute('title', CONFIG.song.title);
+
+    // 재생/정지/리플레이
+    el('play').addEventListener('click', ()=>{ audio.play(); confettiBurst(); startHearts(); });
+    el('pause').addEventListener('click', ()=> audio.pause());
+    el('replay').addEventListener('click', ()=>{ audio.currentTime=0; audio.play(); confettiBurst(true); startHearts(); });
+
+    // ❤️ 떠오르는 하트
+    function startHearts(){
+      const box = el('hearts');
+      let i=0; const until = Date.now()+4000; // 4초 동안
+      const timer = setInterval(()=>{
+        i++; const span = document.createElement('span'); span.className='heart'; span.textContent = Math.random()>.5?'💖':'💝';
+        span.style.left = Math.random()*96+"%";
+        span.style.animationDuration = (3+Math.random()*3)+'s';
+        span.style.opacity = .6+Math.random()*.4;
+        span.style.fontSize = (16+Math.random()*22)+'px';
+        box.append(span);
+        setTimeout(()=> span.remove(), 6000);
+        if(Date.now()>until) clearInterval(timer);
+      }, 120);
+    }
+
+    // 🎉 간단한 컨페티
+    const cx = document.getElementById('confetti');
+    const ctx = cx.getContext('2d');
+    const pieces = [];
+    function resize(){ cx.width = innerWidth; cx.height = innerHeight; }
+    addEventListener('resize', resize); resize();
+
+    function confettiBurst(big){
+      pieces.length = 0;
+      const count = big? 240 : 140;
+      for(let i=0;i<count;i++){
+        pieces.push({
+          x: Math.random()*cx.width,
+          y: -20 - Math.random()*40,
+          r: 6+Math.random()*8,
+          vx: -2 + Math.random()*4,
+          vy: 2 + Math.random()*3,
+          rot: Math.random()*Math.PI,
+          vr: -0.2 + Math.random()*0.4,
+        });
+      }
+      animate();
+    }
+
+    function animate(){
+      ctx.clearRect(0,0,cx.width,cx.height);
+      for(const p of pieces){
+        p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.vy += 0.03; // gravity
+        drawPiece(p);
+      }
+      // remove offscreen
+      for(let i=pieces.length-1;i>=0;i--){ if(pieces[i].y>cx.height+20) pieces.splice(i,1); }
+      if(pieces.length>0) requestAnimationFrame(animate);
+    }
+
+    function drawPiece(p){
+      ctx.save();
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = randomColor();
+      ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r);
+      ctx.restore();
+    }
+    function randomColor(){
+      const palette = ['#ff5ea6','#ffd166','#06d6a0','#118ab2','#ef476f','#9b5de5'];
+      return palette[(Math.random()*palette.length)|0];
+    }
+
+    // 접근성: 키보드 스페이스로 재생
+    document.addEventListener('keydown', (e)=>{
+      if(e.code==='Space'){ e.preventDefault(); audio.paused? audio.play(): audio.pause(); }
+    });
+  </script>
+</body>
+</html>
